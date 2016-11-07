@@ -1,20 +1,26 @@
 package com.jiqa.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jiqa.dao.MultipleChoiceQuestionDAO;
 import com.jiqa.entity.CategoryBean;
 import com.jiqa.entity.MultipleQuestionBean;
+import com.jiqa.entity.QuestionBean;
 
 @Component
 class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
@@ -112,14 +118,14 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 		return result;
 	}
 
-	/*@Transactional
+	@Transactional
 	@SuppressWarnings("unchecked")
-	public List<QuestionBean> getAllMultipleChoiceQuestions(String question, String answer, int categoryId) {
+	public List<MultipleQuestionBean> getAllMultipleChoiceQuestions(String question, String answer, int categoryId) {
 		Session session = null;
-		List<QuestionBean> lstCategories = new ArrayList<QuestionBean>();
+		List<MultipleQuestionBean> lstQuestions = new ArrayList<MultipleQuestionBean>();
 		try {
 			session = sessionFactory.openSession();
-			Criteria criteria = session.createCriteria(QuestionBean.class);
+			Criteria criteria = session.createCriteria(MultipleQuestionBean.class);
 			if (question != null && !"".equals(question)) {
 				criteria.add(Restrictions.like("question", question,
 						MatchMode.ANYWHERE));
@@ -134,9 +140,9 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 						categoryId));
 			}
 			criteria.addOrder(Order.desc("createdOn"));
-			lstCategories = (List<QuestionBean>) criteria.list();
+			lstQuestions = (List<MultipleQuestionBean>) criteria.list();
 		} catch (Exception e) {
-			logger.error("QuestionDAOImpl: Inside getAllCategories: Exception is: "
+			logger.error("MultipleChoiceQuestionDAOImpl: Inside getAllMultipleChoiceQuestions: Exception is: "
 					+ e.getMessage());
 		} finally {
 			try {
@@ -144,24 +150,24 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 					session.close();
 				}
 			} catch (Exception e2) {
-				logger.error("QuestionDAOImpl: Inside getAllCategories: Inside Finally: Exception is: "
+				logger.error("MultipleChoiceQuestionDAOImpl: Inside getAllMultipleChoiceQuestions: Inside Finally: Exception is: "
 						+ e2.getMessage());
 			}
 		}
-		return lstCategories;
-	}*/
+		return lstQuestions;
+	}
 
-	/*@Override
-	public QuestionBean getQuestionInfoById(int questionId) {
+	@Override
+	public MultipleQuestionBean getMultipleChoiceQuestionInfoById(int questionId) {
 		Session session = null;
-		QuestionBean questionBean = null;
+		MultipleQuestionBean questionBean = null;
 		try {
 			session = sessionFactory.openSession();
-			Criteria criteria = session.createCriteria(QuestionBean.class);
+			Criteria criteria = session.createCriteria(MultipleQuestionBean.class);
 			criteria.add(Restrictions.eq("questionId", questionId));
-			questionBean = (QuestionBean) criteria.list().get(0);
+			questionBean = (MultipleQuestionBean) criteria.list().get(0);
 		} catch (Exception e) {
-			logger.error("QuestionDAOImpl: Inside getQuestionInfoById: Exception is: "
+			logger.error("MultipleChoiceQuestionDAOImpl: Inside getMultipleChoiceQuestionInfoById: Exception is: "
 					+ e.getMessage());
 		} finally {
 			try {
@@ -169,30 +175,35 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 					session.close();
 				}
 			} catch (Exception e2) {
-				logger.error("QuestionDAOImpl: Inside getQuestionInfoById: Inside Finally: Exception is: "
+				logger.error("MultipleChoiceQuestionDAOImpl: Inside getMultipleChoiceQuestionInfoById: Inside Finally: Exception is: "
 						+ e2.getMessage());
 			}
 		}
 		return questionBean;
-	}*/
-
-	@Override
-	public MultipleQuestionBean getMultipleChoiceQuestionInfoById(int questionId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
-	public MultipleQuestionBean getMultipleChoiceQuestionInfoByCategoryId(
-			int categoryId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<MultipleQuestionBean> getAllMultipleChoiceQuestions(
-			String question, String answer, int categoryId) {
-		// TODO Auto-generated method stub
-		return null;
+	public MultipleQuestionBean getMultipleChoiceQuestionInfoByCategoryId(int categoryId) {
+		Session session = null;
+		MultipleQuestionBean questionBean = null;
+		try {
+			session = sessionFactory.openSession();
+			Criteria criteria = session.createCriteria(MultipleQuestionBean.class);
+			criteria.add(Restrictions.eq("categoryBean.categoryId", categoryId));
+			questionBean = (MultipleQuestionBean) criteria.list().get(0);
+		} catch (Exception e) {
+			logger.error("MultipleChoiceQuestionDAOImpl: Inside getMultipleChoiceQuestionInfoByCategoryId: Exception is: "
+					+ e.getMessage());
+		} finally {
+			try {
+				if (session != null) {
+					session.close();
+				}
+			} catch (Exception e2) {
+				logger.error("MultipleChoiceQuestionDAOImpl: Inside getMultipleChoiceQuestionInfoByCategoryId: Inside Finally: Exception is: "
+						+ e2.getMessage());
+			}
+		}
+		return questionBean;
 	}
 }
