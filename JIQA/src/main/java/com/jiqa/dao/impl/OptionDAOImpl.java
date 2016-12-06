@@ -7,20 +7,15 @@ import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jiqa.dao.OptionDAO;
-import com.jiqa.entity.CategoryBean;
 import com.jiqa.entity.OptionBean;
-import com.jiqa.entity.QuestionBean;
 
 @Component
 class OptionDAOImpl implements OptionDAO {
@@ -30,31 +25,13 @@ class OptionDAOImpl implements OptionDAO {
 	@Autowired
 	SessionFactory sessionFactory;
 
-	@Transactional
-	public int addOption(OptionBean optionBean) {
-		Session session = null;
-		Transaction tx = null;
+	public int addOption(OptionBean optionBean, Session session) {
 		int maxId = 0;
 		try {
-			session = sessionFactory.openSession();
-//			tx = session.beginTransaction();
 			maxId = (Integer) session.save(optionBean);
-//			tx.commit();
 		} catch (Exception e) {
-//			if (tx != null) {
-//				tx.rollback();
-//			}
 			logger.error("OptionDAOImpl: Inside addOption: Exception is: "
 					+ e.getMessage());
-		} finally {
-			try {
-				if (session != null) {
-					session.close();
-				}
-			} catch (Exception e2) {
-				logger.error("OptionDAOImpl: Inside addOption: Inside Finally: Exception is: "
-						+ e2.getMessage());
-			}
 		}
 		return maxId;
 	}
@@ -92,7 +69,7 @@ class OptionDAOImpl implements OptionDAO {
 	@SuppressWarnings("unchecked")
 	public List<OptionBean> getAllOptionsByQuestionId(int questionId) {
 		Session session = null;
-		List<OptionBean> lstQuestions = new ArrayList<OptionBean>();
+		List<OptionBean> lstOptions = new ArrayList<OptionBean>();
 		try {
 			session = sessionFactory.openSession();
 			Criteria criteria = session.createCriteria(OptionBean.class);
@@ -102,7 +79,7 @@ class OptionDAOImpl implements OptionDAO {
 				criteria.add(Restrictions.eq("multipleQuestionBean.questionId",
 						questionId));
 			}
-			lstQuestions = (List<OptionBean>) criteria.list();
+			lstOptions = (List<OptionBean>) criteria.list();
 		} catch (Exception e) {
 			logger.error("OptionDAOImpl: Inside getAllOptionsByQuestionId: Exception is: "
 					+ e.getMessage());
@@ -116,7 +93,7 @@ class OptionDAOImpl implements OptionDAO {
 						+ e2.getMessage());
 			}
 		}
-		return lstQuestions;
+		return lstOptions;
 	}
 
 	@Override

@@ -57,6 +57,7 @@
 				data-toggle="dropdown" href="#">Modules<span class="caret"></span></a>
 				<ul class="dropdown-menu">
 					<li><a href="showcat">Category</a></li>
+					<li><a href="showmultipleques">Multiple Choice Q/A(s)</a></li>
 				</ul></li>
 			<li><a href="<c:url value='showques'/>">Questions</a></li>
 		</ul>

@@ -6,7 +6,7 @@ import com.jiqa.entity.MultipleQuestionBean;
 
 public interface MultipleChoiceQuestionDAO {
 
-	public int addMultipleChoiceQuestion(MultipleQuestionBean multipleQuestionBean);
+	public int addMultipleChoiceQuestion(MultipleQuestionBean multipleQuestionBean, List<String> options, int index);
 
 	public boolean updateMultipleChoiceQuestion(MultipleQuestionBean multipleQuestionBean);
 

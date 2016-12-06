@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+@JsonSerialize(include = Inclusion.NON_NULL)
 @Entity
 @Table(name = "multiplechoice_questionmaster")
 public class MultipleQuestionBean {
@@ -36,6 +41,7 @@ public class MultipleQuestionBean {
 	@Column(name = "status")
 	private int status;
 	
+	@JsonIgnore
 	@Transient
 	private int categoryId;
 	

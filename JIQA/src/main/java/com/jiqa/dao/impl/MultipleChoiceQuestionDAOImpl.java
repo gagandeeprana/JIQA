@@ -17,10 +17,13 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jiqa.dao.MultipleAnswerDAO;
 import com.jiqa.dao.MultipleChoiceQuestionDAO;
+import com.jiqa.dao.OptionDAO;
 import com.jiqa.entity.CategoryBean;
+import com.jiqa.entity.MultipleAnswerBean;
 import com.jiqa.entity.MultipleQuestionBean;
-import com.jiqa.entity.QuestionBean;
+import com.jiqa.entity.OptionBean;
 
 @Component
 class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
@@ -29,21 +32,46 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 
 	@Autowired
 	SessionFactory sessionFactory;
+	
+	@Autowired
+	OptionDAO optionDAO;
+	
+	@Autowired
+	MultipleAnswerDAO multipleAnswerDAO;
 
-	@Transactional
-	public int addMultipleChoiceQuestion(MultipleQuestionBean multipleQuestionBean) {
+	public int addMultipleChoiceQuestion(MultipleQuestionBean multipleQuestionBean, List<String> options, int index) {
 		Session session = null;
 		Transaction tx = null;
 		int maxId = 0;
+		int addOptionCounter = 0;
 		try {
 			session = sessionFactory.openSession();
-//			tx = session.beginTransaction();
+			tx = session.beginTransaction();
 			maxId = (Integer) session.save(multipleQuestionBean);
-//			tx.commit();
+			OptionBean correctOptionBean = null;
+			if(maxId > 0) {
+				for(int i = 0;i < options.size();i++) {
+					String option = options.get(i);
+					
+					OptionBean optionBean = setOptionsValue(option, multipleQuestionBean);
+					int maxOptionId = optionDAO.addOption(optionBean, session);
+					if(index == i) {
+						correctOptionBean = optionBean;
+					}
+					if(maxOptionId > 0) {
+						addOptionCounter++;
+					}
+				}
+				if(addOptionCounter == 4) {
+					MultipleAnswerBean multipleAnswerBean = setMultipleAnswerValue(correctOptionBean, multipleQuestionBean);
+					multipleAnswerDAO.addAnswer(multipleAnswerBean, session);
+				}
+			}
+			tx.commit();
 		} catch (Exception e) {
-//			if (tx != null) {
-//				tx.rollback();
-//			}
+			if (tx != null) {
+				tx.rollback();
+			}
 			logger.error("MultipleChoiceQuestionDAOImpl: Inside addMultipleChoiceQuestion: Exception is: "
 					+ e.getMessage());
 		} finally {
@@ -205,5 +233,19 @@ class MultipleChoiceQuestionDAOImpl implements MultipleChoiceQuestionDAO {
 			}
 		}
 		return questionBean;
+	}
+	
+	private OptionBean setOptionsValue(String option, MultipleQuestionBean multipleQuestionBean) {
+		OptionBean op = new OptionBean();
+		op.setOptionValue(option);
+		op.setMultipleQuestionBean(multipleQuestionBean);
+		return op;
+	}
+	
+	private MultipleAnswerBean setMultipleAnswerValue(OptionBean optionBean, MultipleQuestionBean multipleQuestionBean) {
+		MultipleAnswerBean multipleAnswerBean = new MultipleAnswerBean();
+		multipleAnswerBean.setMultipleQuestionBean(multipleQuestionBean);
+		multipleAnswerBean.setOptionBean(optionBean);
+		return multipleAnswerBean;
 	}
 }

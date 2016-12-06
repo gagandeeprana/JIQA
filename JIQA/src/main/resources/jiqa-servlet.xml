@@ -33,6 +33,9 @@
 			<list>
 				<value>com.jiqa.entity.CategoryBean</value>
 				<value>com.jiqa.entity.QuestionBean</value>
+				<value>com.jiqa.entity.MultipleQuestionBean</value>
+				<value>com.jiqa.entity.MultipleAnswerBean</value>
+				<value>com.jiqa.entity.OptionBean</value>				
 			</list>
 		</property>
 		<property name="hibernateProperties">

@@ -3,7 +3,6 @@ package com.jiqa.rest.controller.impl;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonArray;
 import com.jiqa.entity.QuestionBean;
 import com.jiqa.model.QuestionAnswer;
 import com.jiqa.rest.controller.QuestionRestController;
